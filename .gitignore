@@ -1,0 +1,3 @@
+frappe-bench
+.bin
+*.pid
