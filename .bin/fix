@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+name=$1
+config_path="frappe-bench/sites/$name/site_config.json"
+db_user=$(python3 -c "import json; print(json.load(open(\"$config_path\"))['db_name'])")
+mysql_password=$(python3 -c "import json; print(json.load(open('frappe-bench/sites/common_site_config.json'))['root_password'])")
+mysql_host=$(python3 -c "import json; print(json.load(open('frappe-bench/sites/common_site_config.json'))['db_host'])")
+docker-compose run --rm frappe bash -c "mysql -h $mysql_host -u root -p$mysql_password -e \"update mysql.user set Host='%' where User='$db_user'; grant all on $db_user.* to '$db_user'@'%'; flush privileges;\""
