@@ -1,2 +1,13 @@
 #!/usr/bin/env bash
-docker-compose run --rm frappe bash $@ 
+DOCKER_COMPOSE_UP_CONTAINER_NAME=frappe
+DOCKER_COMPOSE_RUN_DEV_CONTAINER_NAME=frappedev
+DOCKER_COMPOSE_UP_CONTAINER_RUNNING=$(docker inspect --format="{{.State.Running}}" $DOCKER_COMPOSE_UP_CONTAINER_NAME 2> /dev/null)
+DOCKER_COMPOSE_RUN_DEV_CONTAINER_RUNNING=$(docker inspect --format="{{.State.Running}}" $DOCKER_COMPOSE_RUN_DEV_CONTAINER_NAME 2> /dev/null)
+
+if [ "$DOCKER_COMPOSE_UP_CONTAINER_RUNNING" == "true" ]; then
+  docker exec -it $DOCKER_COMPOSE_UP_CONTAINER_NAME bash $@
+elif [ "$DOCKER_COMPOSE_RUN_DEV_CONTAINER_RUNNING" == "true" ]; then
+  docker exec -it $DOCKER_COMPOSE_RUN_DEV_CONTAINER_NAME bash $@
+else
+  docker-compose run --rm frappe bash $@
+fi

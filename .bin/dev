@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker-compose run --rm --service-ports frappe
+docker-compose run --rm --service-ports --name frappedev frappe
