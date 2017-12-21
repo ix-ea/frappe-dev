@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+name=$1
+config_path="frappe-bench/sites/$name/site_config.json"
+db_user=$(python3 -c "import json; print(json.load(open(\"$config_path\"))['db_name'])")
+db_password=$(python3 -c "import json; print(json.load(open(\"$config_path\"))['db_password'])")
+mysql_host=$(python3 -c "import json; print(json.load(open('frappe-bench/sites/common_site_config.json'))['db_host'])")
+DOCKER_COMPOSE_UP_CONTAINER_NAME=frappe
+DOCKER_COMPOSE_RUN_DEV_CONTAINER_NAME=frappedev
+DOCKER_COMPOSE_UP_CONTAINER_RUNNING=$(docker inspect --format="{{.State.Running}}" $DOCKER_COMPOSE_UP_CONTAINER_NAME 2> /dev/null)
+DOCKER_COMPOSE_RUN_DEV_CONTAINER_RUNNING=$(docker inspect --format="{{.State.Running}}" $DOCKER_COMPOSE_RUN_DEV_CONTAINER_NAME 2> /dev/null)
+COMMAND="mysql -h $mysql_host -u $db_user -p$db_password -D $db_user -A"
+
+if [ "$DOCKER_COMPOSE_UP_CONTAINER_RUNNING" == "true" ]; then
+  docker exec -it $DOCKER_COMPOSE_UP_CONTAINER_NAME bash -c "$COMMAND"
+elif [ "$DOCKER_COMPOSE_RUN_DEV_CONTAINER_RUNNING" == "true" ]; then
+  docker exec -it $DOCKER_COMPOSE_RUN_DEV_CONTAINER_NAME bash -c "$COMMAND" 
+else
+  docker-compose run --rm frappe bash -c "$COMMAND"
+fi
