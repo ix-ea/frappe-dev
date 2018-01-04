@@ -39,5 +39,6 @@ RUN git clone -b develop https://github.com/frappe/bench.git /home/frappe/bench-
 
 ENV PATH $PATH:/home/frappe/.local/bin
 ENV DISPLAY :99
+RUN nohup Xvfb $DISPLAY > /dev/null 2>&1 &
 
 WORKDIR /home/frappe/frappe-bench
