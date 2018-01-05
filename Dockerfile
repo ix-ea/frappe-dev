@@ -4,7 +4,8 @@ MAINTAINER frappé
 USER root
 RUN apt-get update && apt-get install -y iputils-ping git build-essential python-setuptools python-dev libffi-dev libssl-dev redis-tools software-properties-common libxrender1 libxext6 xfonts-75dpi xfonts-base libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev python-tk apt-transport-https libsasl2-dev libldap2-dev libtiff5-dev tcl8.6-dev tk8.6-dev wget curl rlwrap redis-tools nano vim sudo wkhtmltopdf libmysqlclient-dev mariadb-client mariadb-common python-pip supervisor unzip xvfb && \
     pip install --upgrade setuptools pip && \
-    useradd -ms /bin/bash frappe && \
+    adduser frappe && \
+    echo "frappe ALL=(root) NOPASSWD:ALL" >> /etc/sudoers && \
     curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     apt-get install -y nodejs && \
     wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
